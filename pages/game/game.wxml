@@ -1,0 +1,18 @@
+<!--pages/game/game.wxml-->
+<view class="container" style="align-items: center" >
+  <view class="title">第{{level}}关</view>
+
+  <canvas canvas-id="myCanvas" style="width: {{width}}rpx;height: {{height}}rpx" ></canvas>
+
+  <view class="btnBox" style="margin-top:40rpx;position: relative">
+    <button type="warn"  bindtap="up">↑</button>
+    <view>
+      <button type="warn" style="margin-right: 10rpx" bindtap="left">←</button>
+      <button type="warn" bindtap="down">↓</button>
+      <button type="warn" style="margin-left: 10rpx" bindtap="right">→</button>
+    </view>
+<button class="back" type="warn"  bindtap="withdraw">倒</button>
+  </view>
+
+  <button type="warn" bindtap="restartGame">重新开始</button>
+</view>

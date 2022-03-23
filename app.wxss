@@ -1,0 +1,13 @@
+/**app.wxss**/
+.container {
+  height: 100vh;
+  color: #e64340;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+
+} 
+.title{
+  font-size: 18pt;
+  margin: 20rpx auto;
+}
