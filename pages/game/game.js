@@ -1,12 +1,9 @@
 // pages/game/game.js
 var data = require("../../utils/data.js")
+const {getRpx} = require("../../utils/utils");
 
-var map = [
-
-]
-var box = [
-
-]
+var map = []
+var box = []
 let boxWithdraw = []
 let wIndex = -1
 let width = 600
@@ -23,16 +20,16 @@ Page({
         let mapData = data.maps[level].Map
         mapData = mapData.split("\n")
 
-         row_len = mapData.length
-         col_len = mapData[0].length
-        w = width/col_len/2
-        height = width/col_len*row_len
+        row_len = mapData.length
+        col_len = mapData[0].length
+        w = width / col_len / getRpx()
+        height = width / col_len * row_len
         this.setData({
-            width:width,
-            height:height,
+            width: width,
+            height: height,
         })
-        console.log("row_len====",row_len)
-        console.log("col_len",col_len)
+        console.log("row_len====", row_len)
+        console.log("col_len", col_len)
         for (var i = 0; i < row_len; i++) {
             box[i] = new Array()
             map[i] = new Array()
@@ -49,14 +46,14 @@ Page({
                     row = i
                     col = j
                 } else if (mapData[i][j] == "@") {//人
-                box[i][j] = 5
-                row = i
-                col = j
-            }else if (mapData[i][j] == "$") {//箱子
+                    box[i][j] = 5
+                    row = i
+                    col = j
+                } else if (mapData[i][j] == "$") {//箱子
                     box[i][j] = 4
-                }else if (mapData[i][j] == ".") {//球
+                } else if (mapData[i][j] == ".") {//球
                     map[i][j] = 3
-                }else if (mapData[i][j] == "-") {//空地
+                } else if (mapData[i][j] == "-") {//空地
                     map[i][j] = 2
                 } else if (mapData[i][j] == "#") {//墙
                     map[i][j] = 1
@@ -71,25 +68,39 @@ Page({
         let ctx = this.ctx
         ctx.clearRect(0, 0, 200, 385)
         for (var i = 0; i < row_len; i++) {
-            for (var j = 0; j < col_len; j++) {
-                let img = "02.jpg"
-                if (map[i][j] == 1) {
-                    img = "01.jpg"
-                } else if (map[i][j] == 3) {
-                    img = "03.jpg"
+            let rev = map[i].reverse()
+            let b = false
+            let stop = rev.length - 1
+            for (let k = 0; k < rev.length; k++) {
+                if (rev[k] == 1) {
+                    stop = rev.length-k
+                    break
                 }
-
-                ctx.drawImage("/images/icons/" + img, j * w, i * w, w, w)
+            }
+            map[i].reverse()
+            console.log("stop",stop)
+            for (var j = 0; j < col_len; j++) {
+                let img = ""
+                if (map[i][j] == 1) {
+                    b = true
+                    img = "wall1.png"
+                } else if (map[i][j] == 3) {
+                    img = "ball2.png"
+                } else if (b && j < stop) {
+                    img = "wall2.png"
+                }
+                if (img.length > 0) {
+                    ctx.drawImage("/images/icons/" + img, j * w, i * w, w, w)
+                }
 
                 if (box[i][j] == 4) {
                     ctx.drawImage("/images/icons/box1.png", j * w, i * w, w, w)
-                }else if (box[i][j] == 7) {
-                    ctx.drawImage("/images/icons/box2.png", j * w, i * w, w, w)
-                }
-                else if (box[i][j] == 5) {
+                } else if (box[i][j] == 7) {
+                    ctx.drawImage("/images/icons/box3.png", j * w, i * w, w, w)
+                } else if (box[i][j] == 5) {
                     row = i
                     col = j
-                    ctx.drawImage("/images/icons/05.png", j * w, i * w, w, w)
+                    ctx.drawImage("/images/icons/me.gif", j * w, i * w, w, w)
 
                 }
             }
@@ -98,17 +109,17 @@ Page({
     },
     up: function () {
         if (row > 0) {
-            if (map[row - 1][col] != 1 && box[row - 1][col] != 4&& box[row - 1][col] != 7) {
+            if (map[row - 1][col] != 1 && box[row - 1][col] != 4 && box[row - 1][col] != 7) {
                 box[row][col] = 0
                 row = row - 1
                 box[row][col] = 5
                 this.saveBox()
-            } else if (box[row - 1][col] == 4||box[row - 1][col] == 7) {
+            } else if (box[row - 1][col] == 4 || box[row - 1][col] == 7) {
                 if (row - 1 > 0) {
                     if (map[row - 2][col] != 1 && box[row - 2][col] != 4) {
                         if (map[row - 2][col] == 3) {
                             box[row - 2][col] = 7
-                        }else {
+                        } else {
                             box[row - 2][col] = 4
                         }
 
@@ -125,18 +136,18 @@ Page({
         }
     },
     down: function () {
-        if (row < row_len-1) {
-            if (map[row + 1][col] != 1 && box[row + 1][col] != 4&& box[row + 1][col] != 7) {
+        if (row < row_len - 1) {
+            if (map[row + 1][col] != 1 && box[row + 1][col] != 4 && box[row + 1][col] != 7) {
                 box[row][col] = 0
                 row = row + 1
                 box[row][col] = 5
                 this.saveBox()
-            } else if (box[row + 1][col] == 4||box[row + 1][col] == 7) {
+            } else if (box[row + 1][col] == 4 || box[row + 1][col] == 7) {
                 if (row + 1 < 7) {
                     if (map[row + 2][col] != 1 && box[row + 2][col] != 4) {
-                        if (map[row + 2][col]==3) {
+                        if (map[row + 2][col] == 3) {
                             box[row + 2][col] = 7
-                        }else {
+                        } else {
                             box[row + 2][col] = 4
                         }
                         box[row + 1][col] = 0
@@ -153,17 +164,17 @@ Page({
     },
     left: function () {
         if (col > 0) {
-            if (map[row][col - 1] != 1 && box[row][col - 1] != 4&& box[row][col - 1] != 7) {
+            if (map[row][col - 1] != 1 && box[row][col - 1] != 4 && box[row][col - 1] != 7) {
                 box[row][col] = 0
                 col = col - 1
                 box[row][col] = 5
                 this.saveBox()
-            } else if (box[row][col - 1] == 4||box[row][col - 1] == 7) {
+            } else if (box[row][col - 1] == 4 || box[row][col - 1] == 7) {
                 if (col - 1 > 0) {
                     if (map[row][col - 2] != 1 && box[row][col - 2] != 4) {
-                        if (map[row][col - 2]==3) {
+                        if (map[row][col - 2] == 3) {
                             box[row][col - 2] = 7
-                        }else {
+                        } else {
                             box[row][col - 2] = 4
                         }
 
@@ -180,18 +191,18 @@ Page({
         }
     },
     right: function () {
-        if (col < col_len-1) {
-            if (map[row][col + 1] != 1 && box[row][col + 1] != 4&& box[row][col + 1] != 7) {
+        if (col < col_len - 1) {
+            if (map[row][col + 1] != 1 && box[row][col + 1] != 4 && box[row][col + 1] != 7) {
                 box[row][col] = 0
                 col = col + 1
                 box[row][col] = 5
                 this.saveBox()
-            } else if (box[row][col + 1] == 4||box[row][col + 1] == 7) {
+            } else if (box[row][col + 1] == 4 || box[row][col + 1] == 7) {
                 if (col + 1 < 7) {
                     if (map[row][col + 2] != 1 && box[row][col + 2] != 4) {
-                        if (map[row][col + 2]==3) {
+                        if (map[row][col + 2] == 3) {
                             box[row][col + 2] = 7
-                        }else {
+                        } else {
                             box[row][col + 2] = 4
                         }
 
@@ -230,10 +241,10 @@ Page({
             this.checkWin()
         }
     },
-    getBox(e){
+    getBox(e) {
         let box2 = new Array()
         for (var i = 0; i < row_len; i++) {
-            box2[i]=new Array()
+            box2[i] = new Array()
             for (var j = 0; j < col_len; j++) {
                 box2[i][j] = e[i][j]
             }
@@ -256,8 +267,21 @@ Page({
             wx.showModal({
                 title: "恭喜",
                 content: "游戏成功",
-                showCancel: false
+            success:(res)=> {
+                if (res.confirm) {
+                    wx.navigateTo({
+                        url: '../game/game?level=' + this.data.level,
+                    })
+                } else if (res.cancel) {
+
+                }
+            },
             })
+            let levels = wx.getStorageSync("levels")
+            if (levels.length > (this.data.level - 1)) {
+                levels[this.data.level].can = true
+                wx.setStorageSync("levels", levels)
+            }
         }
     },
     restartGame: function () {

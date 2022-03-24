@@ -39,7 +39,7 @@
     "showES6CompileOption": false
   },
   "compileType": "miniprogram",
-  "libVersion": "2.13.1",
+  "libVersion": "2.23.1",
   "appid": "wxf3e835af65f7612d",
   "projectname": "boxGame",
   "debugOptions": {

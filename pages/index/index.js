@@ -17,12 +17,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        for (let i = 0; i < 696; i++) {
-            this.data.levels.push(i)
-        }
-        this.setData({
-            levels: this.data.levels,
-        })
+
     },
 
     /**
@@ -36,7 +31,25 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function () {
+        let levels = wx.getStorageSync("levels")
+        if (levels instanceof Array) {
+            console.log("array", "true")
+        } else {
+            console.log("array", "false")
+            levels = []
+            for (let i = 0; i < 696; i++) {
+                if (i == 0) {
+                    levels.push({index: i, can: true})
+                } else {
+                    levels.push({index: i, can: false})
+                }
+            }
+            wx.setStorageSync("levels", levels)
+        }
 
+        this.setData({
+            levels: levels,
+        })
     },
 
     /**

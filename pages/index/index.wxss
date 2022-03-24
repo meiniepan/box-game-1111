@@ -1,5 +1,8 @@
 /**index.wxss**/
-
+.title{
+  font-size: 18pt;
+  margin: 20rpx auto;
+}
 .levelBox{
   width: 100%;
   display: flex;
