@@ -1,9 +1,9 @@
 <!--index.wxml-->
 <view class="container">
-    <view class="title">游戏选关</view>
+    <text class="title"></text>
     <view class="levelBox">
         <view class="box" wx:for="{{levels}}" bindtap="chooseLevel" data-level="{{index}}">
-            <button type="{{item.can?'primary':'default'}}" disabled="{{!item.can}}">第{{index+1}}关</button>
+            <button type="primary" >{{item}}</button>
         </view>
     </view>
 </view>

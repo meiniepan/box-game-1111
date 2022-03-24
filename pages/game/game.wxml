@@ -8,11 +8,12 @@
 
   <view class="btnBox" style="margin-top:40rpx;margin-bottom:40rpx;position: relative">
     <button type="warn"  bindtap="up">↑</button>
-    <view style="margin-top: 20rpx">
-      <button type="warn" style="margin-right: 40rpx" bindtap="left">←</button>
-      <button type="warn" bindtap="down">↓</button>
-      <button type="warn" style="margin-left: 40rpx" bindtap="right">→</button>
+    <view style="margin-top: 10rpx">
+      <button type="warn" style="margin-right: 20rpx" bindtap="left">←</button>
+<view class="blanc"></view>
+      <button type="warn" style="margin-left: 20rpx" bindtap="right">→</button>
     </view>
+    <button type="warn" style="margin-top: 10rpx" bindtap="down">↓</button>
 <button class="back" type="warn"  bindtap="withdraw">倒</button>
   </view>
 

@@ -1,23 +1,27 @@
+const {maps} = require("../../utils/data");
 Page({
 
     chooseLevel: function (e) {
         let level = e.currentTarget.dataset.level
         wx.navigateTo({
-            url: '../game/game?level=' + level,
+            url: '../game/game?level=' + level+"&index="+this.data.index,
         })
     },
     /**
      * 页面的初始数据
      */
     data: {
-        levels: []
+        levels: [],
+        index:0,
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-
+        this.setData({
+            index: options.level
+        })
     },
 
     /**
@@ -31,20 +35,20 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow: function () {
-        let levels = wx.getStorageSync("levels")
+        let levels = wx.getStorageSync("levels"+this.data.index)
         if (levels instanceof Array) {
             console.log("array", "true")
         } else {
             console.log("array", "false")
             levels = []
-            for (let i = 0; i < 696; i++) {
+            for (let i = 0; i < maps[this.data.index].length; i++) {
                 if (i == 0) {
                     levels.push({index: i, can: true})
                 } else {
                     levels.push({index: i, can: false})
                 }
             }
-            wx.setStorageSync("levels", levels)
+            wx.setStorageSync("levels"+this.data.index, levels)
         }
 
         this.setData({

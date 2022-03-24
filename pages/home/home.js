@@ -3,14 +3,17 @@ Page({
   chooseLevel: function (e) {
     let level = e.currentTarget.dataset.level
     wx.navigateTo({
-      url: '../game/game?level=' + level,
+      url: '../index/index?level=' + level,
     })
   },
   /**
    * 页面的初始数据
    */
   data: {
-    levels: []
+    levels: ["入门关卡BoxWorld（100）",
+      "入门关卡Microban（155）",
+      "入门关卡Microban_II（135）",
+      "进阶关卡（696）"]
   },
 
   /**
@@ -31,25 +34,7 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
-    let levels = wx.getStorageSync("levels")
-    if (levels instanceof Array) {
-      console.log("array", "true")
-    } else {
-      console.log("array", "false")
-      levels = []
-      for (let i = 0; i < 696; i++) {
-        if (i == 0) {
-          levels.push({index: i, can: true})
-        } else {
-          levels.push({index: i, can: false})
-        }
-      }
-      wx.setStorageSync("levels", levels)
-    }
 
-    this.setData({
-      levels: levels,
-    })
   },
 
   /**

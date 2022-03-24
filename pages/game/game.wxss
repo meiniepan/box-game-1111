@@ -41,6 +41,10 @@ canvas{
   width: 90rpx !important;
   height: 90rpx !important;
 }
+.blanc{
+  width: 90rpx ;
+  height: 90rpx;
+}
 .back{
   position: absolute;
   display: flex;

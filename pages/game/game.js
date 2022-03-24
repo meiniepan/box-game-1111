@@ -6,9 +6,10 @@ var map = []
 var box = []
 let boxWithdraw = []
 let wIndex = -1
-let width = 600
-let height = 600
+let width = 700
+let height = 700
 var w = 40
+let withdrawMax = 20//最大倒退数
 //人物的行与列
 var row = 0
 var col = 0
@@ -17,7 +18,8 @@ var col_len = 0
 Page({
 
     initMap: function (level) {
-        let mapData = data.maps[level].Map
+
+        let mapData = data.maps[this.data.index][level].Map
         mapData = mapData.split("\n")
 
         row_len = mapData.length
@@ -38,7 +40,7 @@ Page({
                 map[i][j] = 0
 
                 if (mapData[i][j] == "*") {//箱子叠球
-                    box[i][j] = 4
+                    box[i][j] = 7
                     map[i][j] = 3
                 } else if (mapData[i][j] == "+") {//人叠球
                     box[i][j] = 5
@@ -87,7 +89,7 @@ Page({
                 } else if (map[i][j] == 3) {
                     img = "ball2.png"
                 } else if (b && j < stop) {
-                    img = "wall2.png"
+                    img = "img.png"
                 }
                 if (img.length > 0) {
                     ctx.drawImage("/images/icons/" + img, j * w, i * w, w, w)
@@ -222,7 +224,7 @@ Page({
     saveBox() {
         let box2 = this.getBox(box)
 
-        if (boxWithdraw.length > 4) {
+        if (boxWithdraw.length > withdrawMax) {
             boxWithdraw.splice(0, 1)
             boxWithdraw.push(box2)
         } else {
@@ -232,7 +234,7 @@ Page({
     },
     withdraw() {
         if (wIndex < 1) {
-        } else if (wIndex > 4) {
+        } else if (wIndex > withdrawMax) {
         } else {
             boxWithdraw.splice(wIndex, 1)
             box = this.getBox(boxWithdraw[wIndex - 1])
@@ -267,20 +269,22 @@ Page({
             wx.showModal({
                 title: "恭喜",
                 content: "游戏成功",
+                confirmText:"下一关",
             success:(res)=> {
                 if (res.confirm) {
+                    wx.navigateBack()
                     wx.navigateTo({
-                        url: '../game/game?level=' + this.data.level,
+                        url: '../game/game?level=' + this.data.level+"&index="+this.data.index,
                     })
                 } else if (res.cancel) {
 
                 }
             },
             })
-            let levels = wx.getStorageSync("levels")
+            let levels = wx.getStorageSync("levels"+this.data.index)
             if (levels.length > (this.data.level - 1)) {
                 levels[this.data.level].can = true
-                wx.setStorageSync("levels", levels)
+                wx.setStorageSync("levels"+this.data.index, levels)
             }
         }
     },
@@ -298,8 +302,13 @@ Page({
      */
     onLoad: function (options) {
         let level = options.level
+        let index = options.index
         this.setData({
-            level: parseInt(level) + 1
+            level: parseInt(level) + 1,
+            index: index
+        })
+        wx.setNavigationBarTitle({
+            title:"关卡："+data.maps[index][level].Title
         })
         this.ctx = wx.createCanvasContext('myCanvas')
         this.initMap(level)
