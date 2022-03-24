@@ -13227,7 +13227,36 @@ let map4 = [{
     "dr": [-1, 1, 0, 0, -1, 1, -1, 1],
     "key": 82060214
 }]
+let map5 = [
+    {
+        "Author": "Solang",
+        "Cols": 9,
+        "Comment": "",
+        "L_CRC_Num": 2,
+        "Level_id": 1369,
+        "Lock": false,
+        "Map": "_####___\n" +
+            "_#--#___\n" +
+            "_#--####\n" +
+            "_#-..*@#\n" +
+            "_#-$$--#\n" +
+            "#---####\n" +
+            "#---#___\n" +
+            "#####___",
+        "Num": 696,
+        "P_id": 8,
+        "Rows": 9,
+        "Select": false,
+        "Solved": false,
+        "Title": "雾锁孤城",
+        "Trun": 0,
+        "dc": [0, 0, 1, -1, -1, -1, 1, 1],
+        "dr": [-1, 1, 0, 0, -1, 1, -1, 1],
+        "key": 82060214
+    }
 
+
+]
 module.exports = {
-    maps: [map1,map2,map3,map4,]
+    maps: [map1,map2,map3,map4,map5]
 }

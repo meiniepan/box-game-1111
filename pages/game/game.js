@@ -37,7 +37,7 @@ Page({
             map[i] = new Array()
             for (var j = 0; j < col_len; j++) {
                 box[i][j] = 0
-                map[i][j] = 0
+                map[i][j] = 2
 
                 if (mapData[i][j] == "*") {//箱子叠球
                     box[i][j] = 7
@@ -59,6 +59,8 @@ Page({
                     map[i][j] = 2
                 } else if (mapData[i][j] == "#") {//墙
                     map[i][j] = 1
+                }else if (mapData[i][j] == "_") {//墙
+                    map[i][j] = 0
                 }
             }
         }
@@ -70,25 +72,27 @@ Page({
         let ctx = this.ctx
         ctx.clearRect(0, 0, 200, 385)
         for (var i = 0; i < row_len; i++) {
-            let rev = map[i].reverse()
-            let b = false
-            let stop = rev.length - 1
-            for (let k = 0; k < rev.length; k++) {
-                if (rev[k] == 1) {
-                    stop = rev.length-k
-                    break
-                }
-            }
-            map[i].reverse()
-            console.log("stop",stop)
+            // let rev = map[i].reverse()
+            // let b = false
+            // let stop = rev.length - 1
+            // for (let k = 0; k < rev.length; k++) {
+            //     if (rev[k] == 1) {
+            //         stop = rev.length-k
+            //         break
+            //     }
+            // }
+            // map[i].reverse()
+            // console.log("stop",stop)
             for (var j = 0; j < col_len; j++) {
                 let img = ""
                 if (map[i][j] == 1) {
-                    b = true
+                    // b = true
                     img = "wall1.png"
                 } else if (map[i][j] == 3) {
                     img = "ball2.png"
-                } else if (b && j < stop) {
+                } else if (map[i][j] == 0) {
+                    img = ""
+                }else {
                     img = "img.png"
                 }
                 if (img.length > 0) {
