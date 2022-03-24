@@ -3,7 +3,7 @@
   <view class="title">游戏选关</view>
   <view class="levelBox">
     <view class="box" wx:for="{{levels}}" bindtap="chooseLevel" data-level="{{index}}">
-      <button type="{{item.can?'primary':'default'}}" disabled="{{!item.can}}">第{{index+1}}关</button>
+      <button type="{{item.can?'primary':'default'}}" >第{{index+1}}关</button>
     </view>
   </view>
 </view>

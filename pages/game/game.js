@@ -122,7 +122,7 @@ Page({
                 this.saveBox()
             } else if (box[row - 1][col] == 4 || box[row - 1][col] == 7) {
                 if (row - 1 > 0) {
-                    if (map[row - 2][col] != 1 && box[row - 2][col] != 4) {
+                    if (map[row - 2][col] != 1 && box[row - 2][col] != 4&& box[row - 2][col] != 7) {
                         if (map[row - 2][col] == 3) {
                             box[row - 2][col] = 7
                         } else {
@@ -149,8 +149,8 @@ Page({
                 box[row][col] = 5
                 this.saveBox()
             } else if (box[row + 1][col] == 4 || box[row + 1][col] == 7) {
-                if (row + 1 < 7) {
-                    if (map[row + 2][col] != 1 && box[row + 2][col] != 4) {
+                if (row + 1 < row_len - 1) {
+                    if (map[row + 2][col] != 1 && box[row + 2][col] != 4&& box[row + 2][col] != 7) {
                         if (map[row + 2][col] == 3) {
                             box[row + 2][col] = 7
                         } else {
@@ -177,7 +177,7 @@ Page({
                 this.saveBox()
             } else if (box[row][col - 1] == 4 || box[row][col - 1] == 7) {
                 if (col - 1 > 0) {
-                    if (map[row][col - 2] != 1 && box[row][col - 2] != 4) {
+                    if (map[row][col - 2] != 1 && box[row][col - 2] != 4&& box[row][col - 2] != 7) {
                         if (map[row][col - 2] == 3) {
                             box[row][col - 2] = 7
                         } else {
@@ -204,8 +204,8 @@ Page({
                 box[row][col] = 5
                 this.saveBox()
             } else if (box[row][col + 1] == 4 || box[row][col + 1] == 7) {
-                if (col + 1 < 7) {
-                    if (map[row][col + 2] != 1 && box[row][col + 2] != 4) {
+                if (col + 1 < col_len - 1) {
+                    if (map[row][col + 2] != 1 && box[row][col + 2] != 4&& box[row][col + 2] != 7) {
                         if (map[row][col + 2] == 3) {
                             box[row][col + 2] = 7
                         } else {

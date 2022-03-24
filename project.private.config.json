@@ -15,7 +15,7 @@
         {
           "name": "pages/game/game",
           "pathName": "pages/game/game",
-          "query": "level=453",
+          "query": "level=99&index=0",
           "scene": null
         }
       ]
