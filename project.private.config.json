@@ -15,7 +15,19 @@
         {
           "name": "pages/game/game",
           "pathName": "pages/game/game",
-          "query": "level=99&index=0",
+          "query": "level=95&index=0",
+          "scene": null
+        },
+        {
+          "name": "pages/wan/wan",
+          "pathName": "pages/wan/wan",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "pages/home/home",
+          "pathName": "pages/home/home",
+          "query": "",
           "scene": null
         }
       ]

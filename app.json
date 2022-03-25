@@ -1,6 +1,8 @@
 {
   "pages": [
+    "pages/splash/splash",
     "pages/home/home",
+    "pages/wan/wan",
     "pages/index/index",
     "pages/game/game"
   ],

@@ -43,9 +43,9 @@ Page({
             levels = []
             for (let i = 0; i < maps[this.data.index].length; i++) {
                 if (i == 0) {
-                    levels.push({index: i, can: true})
+                    levels.push({index: i, unlock: true})
                 } else {
-                    levels.push({index: i, can: false})
+                    levels.push({index: i, unlock: false})
                 }
             }
             wx.setStorageSync("levels"+this.data.index, levels)

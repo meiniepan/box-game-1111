@@ -59,7 +59,7 @@ Page({
                     map[i][j] = 2
                 } else if (mapData[i][j] == "#") {//墙
                     map[i][j] = 1
-                }else if (mapData[i][j] == "_") {//墙
+                } else if (mapData[i][j] == "_") {//墙
                     map[i][j] = 0
                 }
             }
@@ -70,7 +70,7 @@ Page({
         console.log("wIndex", wIndex)
         console.log("boxWithdraw", boxWithdraw)
         let ctx = this.ctx
-        ctx.clearRect(0, 0, 200, 385)
+        ctx.clearRect(0, 0, width, height)
         for (var i = 0; i < row_len; i++) {
             // let rev = map[i].reverse()
             // let b = false
@@ -92,7 +92,7 @@ Page({
                     img = "ball2.png"
                 } else if (map[i][j] == 0) {
                     img = ""
-                }else {
+                } else {
                     img = "img.png"
                 }
                 if (img.length > 0) {
@@ -122,7 +122,7 @@ Page({
                 this.saveBox()
             } else if (box[row - 1][col] == 4 || box[row - 1][col] == 7) {
                 if (row - 1 > 0) {
-                    if (map[row - 2][col] != 1 && box[row - 2][col] != 4&& box[row - 2][col] != 7) {
+                    if (map[row - 2][col] != 1 && box[row - 2][col] != 4 && box[row - 2][col] != 7) {
                         if (map[row - 2][col] == 3) {
                             box[row - 2][col] = 7
                         } else {
@@ -150,7 +150,7 @@ Page({
                 this.saveBox()
             } else if (box[row + 1][col] == 4 || box[row + 1][col] == 7) {
                 if (row + 1 < row_len - 1) {
-                    if (map[row + 2][col] != 1 && box[row + 2][col] != 4&& box[row + 2][col] != 7) {
+                    if (map[row + 2][col] != 1 && box[row + 2][col] != 4 && box[row + 2][col] != 7) {
                         if (map[row + 2][col] == 3) {
                             box[row + 2][col] = 7
                         } else {
@@ -177,7 +177,7 @@ Page({
                 this.saveBox()
             } else if (box[row][col - 1] == 4 || box[row][col - 1] == 7) {
                 if (col - 1 > 0) {
-                    if (map[row][col - 2] != 1 && box[row][col - 2] != 4&& box[row][col - 2] != 7) {
+                    if (map[row][col - 2] != 1 && box[row][col - 2] != 4 && box[row][col - 2] != 7) {
                         if (map[row][col - 2] == 3) {
                             box[row][col - 2] = 7
                         } else {
@@ -205,7 +205,7 @@ Page({
                 this.saveBox()
             } else if (box[row][col + 1] == 4 || box[row][col + 1] == 7) {
                 if (col + 1 < col_len - 1) {
-                    if (map[row][col + 2] != 1 && box[row][col + 2] != 4&& box[row][col + 2] != 7) {
+                    if (map[row][col + 2] != 1 && box[row][col + 2] != 4 && box[row][col + 2] != 7) {
                         if (map[row][col + 2] == 3) {
                             box[row][col + 2] = 7
                         } else {
@@ -270,26 +270,37 @@ Page({
     },
     checkWin: function () {
         if (this.isWin()) {
+            let levels = wx.getStorageSync("levels" + this.data.index)
+            let next = levels.length > (this.data.level)
+
+                levels[this.data.level-1].solved = true
+            if (next) {
+                levels[this.data.level].unlock = true
+            }
+                wx.setStorageSync("levels" + this.data.index, levels)
             wx.showModal({
                 title: "恭喜",
                 content: "游戏成功",
-                confirmText:"下一关",
-            success:(res)=> {
-                if (res.confirm) {
-                    wx.navigateBack()
-                    wx.navigateTo({
-                        url: '../game/game?level=' + this.data.level+"&index="+this.data.index,
-                    })
-                } else if (res.cancel) {
+                confirmText: "下一关",
+                success: (res) => {
+                    if (res.confirm && next) {
+                        let level = this.data.level
+                        this.setData({
+                            level: level + 1,
+                        })
+                        wx.setNavigationBarTitle({
+                            title: "关卡：" + data.maps[this.data.index][level].Title
+                        })
+                        this.initMap(level)
+                        this.drawCanvas()
 
-                }
-            },
+
+                    } else if (res.cancel) {
+
+                    }
+                },
             })
-            let levels = wx.getStorageSync("levels"+this.data.index)
-            if (levels.length > (this.data.level - 1)) {
-                levels[this.data.level].can = true
-                wx.setStorageSync("levels"+this.data.index, levels)
-            }
+
         }
     },
     restartGame: function () {
@@ -312,7 +323,7 @@ Page({
             index: index
         })
         wx.setNavigationBarTitle({
-            title:"关卡："+data.maps[index][level].Title
+            title: "关卡：" + data.maps[index][level].Title
         })
         this.ctx = wx.createCanvasContext('myCanvas')
         this.initMap(level)
