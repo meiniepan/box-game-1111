@@ -10,7 +10,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        this.checkOnline()
+        this.checkOnline2()
     },
     checkOnline() {
         let time = new Date().getTime()/1000
@@ -25,6 +25,42 @@ Page({
             })
         }
 
+    },
+
+    checkOnline2() {
+        const db = wx.cloud.database()
+        // 查询当前用户所有的 counters
+
+        db.collection("roles")
+            .get({
+                success: res => {
+                    console.log("res", res)
+                    if (res.data.length > 0) {
+                        let online = res.data[0].online
+                        let open_vip = res.data[0].open_vip
+                        wx.setStorageSync("online", online)
+                        wx.setStorageSync("open_vip", open_vip)
+                        if (online) {
+                            this.login()
+                        } else {
+                            wx.setStorageSync("user_type", "")
+                            wx.switchTab({
+                                url: '/pages/index/index',
+                            })
+                        }
+
+                    } else {
+
+                    }
+                },
+                fail: err => {
+                    wx.showToast({
+                        icon: 'none',
+                        title: '系统升级中~~'
+                    })
+                    console.error('[数据库] [查询记录] 失败：', err)
+                }
+            })
     },
     /**
      * 生命周期函数--监听页面初次渲染完成

@@ -310,7 +310,9 @@ Page({
     /**
      * 页面的初始数据
      */
-    data: {},
+    data: {
+        helpArray:["云端求解"],
+    },
 
     /**
      * 生命周期函数--监听页面加载
@@ -329,6 +331,8 @@ Page({
         this.initMap(level)
         this.drawCanvas()
     },
+
+    doHelp(){},
 
     /**
      * 生命周期函数--监听页面初次渲染完成

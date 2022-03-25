@@ -10,6 +10,10 @@
 .title{
   font-size: 16pt;
 }
+.image{
+  width: 80rpx;
+  height: 80rpx;
+}
 .top_button {
   display: flex;
   border-radius: 10rpx;
