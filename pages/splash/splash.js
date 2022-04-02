@@ -10,12 +10,13 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        this.checkOnline2()
+        this.checkOnline()
     },
     checkOnline() {
         let time = new Date().getTime()/1000
         console.log("time",time)
         if (time>1648276394){
+
             wx.redirectTo({
                 url: '/pages/home/home',
             })
@@ -31,7 +32,7 @@ Page({
         const db = wx.cloud.database()
         // 查询当前用户所有的 counters
 
-        db.collection("roles")
+        db.collection("db_set")
             .get({
                 success: res => {
                     console.log("res", res)

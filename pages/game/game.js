@@ -5,6 +5,7 @@ const {getRpx} = require("../../utils/utils");
 var map = []
 var box = []
 let boxWithdraw = []
+let answer = []
 let wIndex = -1
 let width = 700
 let height = 700
@@ -15,10 +16,12 @@ var row = 0
 var col = 0
 var row_len = 0
 var col_len = 0
+let timer = null
 Page({
 
     initMap: function (level) {
 
+        answer = []
         let mapData = data.maps[this.data.index][level].Map
         mapData = mapData.split("\n")
 
@@ -64,11 +67,9 @@ Page({
                 }
             }
         }
-        this.saveBox()
+        this.saveBox("")
     },
     drawCanvas: function () {
-        console.log("wIndex", wIndex)
-        console.log("boxWithdraw", boxWithdraw)
         let ctx = this.ctx
         ctx.clearRect(0, 0, width, height)
         for (var i = 0; i < row_len; i++) {
@@ -113,13 +114,21 @@ Page({
         }
         ctx.draw()
     },
-    up: function () {
+    up(){
+        console.log("timer",timer)
+        if (timer!=null){
+            clearInterval(timer)
+        }
+      this.up0()
+    },
+
+    up0: function () {
         if (row > 0) {
             if (map[row - 1][col] != 1 && box[row - 1][col] != 4 && box[row - 1][col] != 7) {
                 box[row][col] = 0
                 row = row - 1
                 box[row][col] = 5
-                this.saveBox()
+                this.saveBox(1)
             } else if (box[row - 1][col] == 4 || box[row - 1][col] == 7) {
                 if (row - 1 > 0) {
                     if (map[row - 2][col] != 1 && box[row - 2][col] != 4 && box[row - 2][col] != 7) {
@@ -133,7 +142,7 @@ Page({
                         box[row][col] = 0
                         row = row - 1
                         box[row][col] = 5
-                        this.saveBox()
+                        this.saveBox(1)
                     }
                 }
             }
@@ -141,13 +150,21 @@ Page({
             this.checkWin()
         }
     },
-    down: function () {
+
+    down(){
+        if (timer!=null){
+            clearInterval(timer)
+        }
+        this.down0()
+    },
+
+    down0: function () {
         if (row < row_len - 1) {
             if (map[row + 1][col] != 1 && box[row + 1][col] != 4 && box[row + 1][col] != 7) {
                 box[row][col] = 0
                 row = row + 1
                 box[row][col] = 5
-                this.saveBox()
+                this.saveBox(2)
             } else if (box[row + 1][col] == 4 || box[row + 1][col] == 7) {
                 if (row + 1 < row_len - 1) {
                     if (map[row + 2][col] != 1 && box[row + 2][col] != 4 && box[row + 2][col] != 7) {
@@ -160,7 +177,7 @@ Page({
                         box[row][col] = 0
                         row = row + 1
                         box[row][col] = 5
-                        this.saveBox()
+                        this.saveBox(2)
                     }
                 }
             }
@@ -168,13 +185,20 @@ Page({
             this.checkWin()
         }
     },
-    left: function () {
+
+    left(){
+        if (timer!=null){
+            clearInterval(timer)
+        }
+        this.left0()
+    },
+    left0: function () {
         if (col > 0) {
             if (map[row][col - 1] != 1 && box[row][col - 1] != 4 && box[row][col - 1] != 7) {
                 box[row][col] = 0
                 col = col - 1
                 box[row][col] = 5
-                this.saveBox()
+                this.saveBox(3)
             } else if (box[row][col - 1] == 4 || box[row][col - 1] == 7) {
                 if (col - 1 > 0) {
                     if (map[row][col - 2] != 1 && box[row][col - 2] != 4 && box[row][col - 2] != 7) {
@@ -188,7 +212,7 @@ Page({
                         box[row][col] = 0
                         col = col - 1
                         box[row][col] = 5
-                        this.saveBox()
+                        this.saveBox(3)
                     }
                 }
             }
@@ -196,13 +220,21 @@ Page({
             this.checkWin()
         }
     },
-    right: function () {
+
+    right(){
+        if (timer!=null){
+            clearInterval(timer)
+        }
+        this.right0()
+    },
+
+    right0: function () {
         if (col < col_len - 1) {
             if (map[row][col + 1] != 1 && box[row][col + 1] != 4 && box[row][col + 1] != 7) {
                 box[row][col] = 0
                 col = col + 1
                 box[row][col] = 5
-                this.saveBox()
+                this.saveBox(4)
             } else if (box[row][col + 1] == 4 || box[row][col + 1] == 7) {
                 if (col + 1 < col_len - 1) {
                     if (map[row][col + 2] != 1 && box[row][col + 2] != 4 && box[row][col + 2] != 7) {
@@ -216,7 +248,7 @@ Page({
                         box[row][col] = 0
                         col = col + 1
                         box[row][col] = 5
-                        this.saveBox()
+                        this.saveBox(4)
                     }
                 }
             }
@@ -225,7 +257,10 @@ Page({
         }
     },
 
-    saveBox() {
+    saveBox(id) {
+        if(id!=""){
+            answer.push(id)
+        }
         let box2 = this.getBox(box)
 
         if (boxWithdraw.length > withdrawMax) {
@@ -236,7 +271,14 @@ Page({
             wIndex++
         }
     },
-    withdraw() {
+    withdraw(){
+        if (timer!=null){
+            clearInterval(timer)
+        }
+        this.withdraw0()
+    },
+    withdraw0() {
+        answer.push(5)
         if (wIndex < 1) {
         } else if (wIndex > withdrawMax) {
         } else {
@@ -269,41 +311,104 @@ Page({
         return true
     },
     checkWin: function () {
+        let _this = this
         if (this.isWin()) {
             let levels = wx.getStorageSync("levels" + this.data.index)
             let next = levels.length > (this.data.level)
 
-                levels[this.data.level-1].solved = true
+            levels[this.data.level - 1].solved = true
             if (next) {
                 levels[this.data.level].unlock = true
             }
-                wx.setStorageSync("levels" + this.data.index, levels)
-            wx.showModal({
-                title: "恭喜",
-                content: "游戏成功",
-                confirmText: "下一关",
-                success: (res) => {
-                    if (res.confirm && next) {
-                        let level = this.data.level
-                        this.setData({
-                            level: level + 1,
+            wx.setStorageSync("levels" + this.data.index, levels)
+            wx.showActionSheet({
+                alertText: "恭喜!  游戏成功",
+                itemColor: "#81D8D0",
+                itemList: ['下一关', '上传答案'],
+                success:(res)=> {
+                    console.log(res.tapIndex)
+                    if (res.tapIndex == 0) {
+                        if (next) {
+                            let level = this.data.level
+                            this.setData({
+                                level: level + 1,
+                            })
+                            wx.setNavigationBarTitle({
+                                title: "关卡：" + data.maps[this.data.index][level].Title
+                            })
+                            this.initMap(level)
+                            this.drawCanvas()
+
+
+                        } else if (res.cancel) {
+
+                        }
+                    } else if (res.tapIndex == 1) {
+                        let nick = wx.getStorageSync("user_name")
+                        if (nick.length==0){
+                            nick = "你的昵称"
+                        }
+                        wx.showModal({
+                            title: "上传答案",
+                            content: nick,
+                            editable: true,
+                            confirmText: "上传",
+                            success: (res) => {
+                                if (res.content.length==0){
+                                    wx.showToast({
+                                        icon: 'none',
+                                        title: '昵称不能为空'
+                                    })
+                                    return
+                                }
+                                console.log("res", res)
+                                wx.setStorageSync("user_name", res.content)
+                                _this.upload()
+                            },
                         })
-                        wx.setNavigationBarTitle({
-                            title: "关卡：" + data.maps[this.data.index][level].Title
-                        })
-                        this.initMap(level)
-                        this.drawCanvas()
-
-
-                    } else if (res.cancel) {
-
                     }
                 },
+                fail(res) {
+                    console.log(res.errMsg)
+                }
             })
+
 
         }
     },
+
+    upload() {
+        const db = wx.cloud.database()
+        let data2= {
+            userName: wx.getStorageSync("user_name", "你的昵称"),
+            title:data.maps[this.data.index][this.data.level-1].Title,
+            answer: answer,
+        }
+        wx.showLoading({
+            title: '上传中',
+        })
+        db.collection("answer").add({
+            data: data2,
+            success: res => {
+                // 在返回结果中会包含新创建的记录的 _id
+                wx.hideLoading()
+                wx.showToast({
+                    title: '上传成功',
+                })
+            },
+            fail: err => {
+                wx.hideLoading()
+                wx.showToast({
+                    icon: 'none',
+                    title: '上传失败'
+                })
+            }
+        })
+    },
+
     restartGame: function () {
+        wIndex = -1
+        boxWithdraw = []
         this.initMap(this.data.level - 1)
         this.drawCanvas()
     },
@@ -311,7 +416,7 @@ Page({
      * 页面的初始数据
      */
     data: {
-        helpArray:["云端求解"],
+        helpArray: ["云端求解"],
     },
 
     /**
@@ -332,8 +437,88 @@ Page({
         this.drawCanvas()
     },
 
-    doHelp(){},
+    doHelp(e) {
+        if (e.detail.value==0){
+            this.getAnswer()
+        }
 
+    },
+
+    getAnswer(){
+        const db = wx.cloud.database()
+        // 查询当前用户所有的 counters
+        wx.showLoading({
+            title: '加载中...',
+        })
+        db.collection("answer").where({
+            title:data.maps[this.data.index][this.data.level-1].Title
+        })
+            .get({
+                success: res => {
+                    wx.hideLoading()
+                    console.log("res", res)
+                    if (res.data.length > 0) {
+                        let arr = []
+                        for (let i = 0; i < res.data.length; i++) {
+                            if (i > 5) {
+                                break
+                            }
+                            arr.push(res.data[i].userName)
+                        }
+                        wx.showActionSheet({
+                            alertText: "云端答案",
+                            itemColor: "#81D8D0",
+                            itemList: arr,
+                            success:(res2)=> {
+                                console.log(res2.tapIndex)
+                                this.playAnswer(res.data[res2.tapIndex].answer)
+                            },
+                            fail(res) {
+                                console.log(res.errMsg)
+                            }
+                        })
+
+                    } else {
+                        wx.showToast({
+                            icon: 'none',
+                            title: '还没有答案呢'
+                        })
+                    }
+                },
+                fail: err => {
+                    wx.hideLoading()
+                    wx.showToast({
+                        icon: 'none',
+                        title: '系统升级中~~'
+                    })
+                    console.error('[数据库] [查询记录] 失败：', err)
+                }
+            })
+    },
+    playAnswer(arr) {
+        if (arr.length > 0) {
+            this.restartGame()
+            let index = 0
+             timer = setInterval(() => {
+                    if (index == arr.length) {
+                        clearInterval(timer)
+                    }
+                    if (arr[index] == 1) {
+                        this.up0()
+                    } else if (arr[index] == 2) {
+                        this.down0()
+                    } else if (arr[index] == 3) {
+                        this.left0()
+                    } else if (arr[index] == 4) {
+                        this.right0()
+                    } else if (arr[index] == 5) {
+                        this.withdraw0()
+                    }
+                    index++
+                }
+                , 500)
+        }
+    },
     /**
      * 生命周期函数--监听页面初次渲染完成
      */
