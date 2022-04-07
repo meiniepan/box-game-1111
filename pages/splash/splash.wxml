@@ -1,2 +1,2 @@
 <!--pages/splash/splash.wxml-->
-<text>pages/splash/splash.wxml</text>
+<image class="img"  src="/images/icons/daba.jpg" mode="aspectFill"/>

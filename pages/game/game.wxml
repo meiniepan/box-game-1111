@@ -2,10 +2,8 @@
 <view class="container" style="align-items: center">
     <view class="top">
         <view class="title">第{{level}}关</view>
-        <picker  data-type="earning" data-data="{{helpArray}}" value="" range="{{helpArray}}"
-                bindchange="doHelp">
-            <image class="image" src="/images/icons/lingdang.png" mode="widthFix"/>
-        </picker>
+
+            <image class="image" bindtap="doHelp" src="/images/icons/lingdang.png" mode="widthFix"/>
 
         <view class="top_button" type="warn" bindtap="restartGame">重新开始</view>
     </view>

@@ -383,6 +383,7 @@ Page({
             userName: wx.getStorageSync("user_name", "你的昵称"),
             title:data.maps[this.data.index][this.data.level-1].Title,
             answer: answer,
+            steps: answer.length,
         }
         wx.showLoading({
             title: '上传中',
@@ -438,9 +439,23 @@ Page({
     },
 
     doHelp(e) {
-        if (e.detail.value==0){
-            this.getAnswer()
-        }
+        let arr = ["云端求解"]
+
+        wx.showActionSheet({
+            alertText: "",
+            itemColor: "#81D8D0",
+            itemList: arr,
+            success:(res2)=> {
+                console.log(res2.tapIndex)
+                if (res2.tapIndex==0){
+                    this.getAnswer()
+                }
+            },
+            fail(res) {
+                console.log(res.errMsg)
+            }
+        })
+
 
     },
 
@@ -450,7 +465,8 @@ Page({
         wx.showLoading({
             title: '加载中...',
         })
-        db.collection("answer").where({
+        db.collection("answer")
+            .where({
             title:data.maps[this.data.index][this.data.level-1].Title
         })
             .get({
@@ -458,12 +474,22 @@ Page({
                     wx.hideLoading()
                     console.log("res", res)
                     if (res.data.length > 0) {
+                        var compare = function (x, y) {//比较函数
+                            if (x.answer.length < y.answer.length) {
+                                return -1;
+                            } else if (x.answer.length > y.answer.length) {
+                                return 1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                        res.data.sort(compare)
                         let arr = []
                         for (let i = 0; i < res.data.length; i++) {
                             if (i > 5) {
                                 break
                             }
-                            arr.push(res.data[i].userName)
+                            arr.push(res.data[i].userName+" [步数："+res.data[i].answer.length+"]")
                         }
                         wx.showActionSheet({
                             alertText: "云端答案",

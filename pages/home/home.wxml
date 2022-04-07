@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container" style="margin-top: 120rpx">
+<view class="container" style="padding-top: 180rpx">
     <text class="title"></text>
     <view class="levelBox">
         <view class="box" wx:for="{{levels}}" bindtap="chooseLevel" data-level="{{index}}">

@@ -10,7 +10,11 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        this.checkOnline()
+        setTimeout(() => {
+                this.checkOnline()
+            }
+            , 2000)
+
     },
     checkOnline() {
         let time = new Date().getTime()/1000

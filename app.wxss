@@ -1,13 +1,14 @@
 /**app.wxss**/
 .container {
-  height: 100vh;
-  color: #e64340;
-  font-weight: bold;
-  display: flex;
-  flex-direction: column;
-
+    height: 100vh;
+    color: #e64340;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
-page{
-  background: #81D8D0;
+
+page {
+    background: #81D8D0;
 }
 
