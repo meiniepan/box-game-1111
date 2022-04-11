@@ -1,11 +1,11 @@
 <!--pages/game/game.wxml-->
 <view class="container" style="align-items: center">
     <view class="top">
-        <view class="title">第{{level}}关</view>
+        <view class="title">第{{level}}关 　移步:{{answer.length}} 　移箱:{{boxSteps}}</view>
 
-            <image class="image" bindtap="doHelp" src="/images/icons/lingdang.png" mode="widthFix"/>
+        <image class="image" bindtap="doHelp" src="/images/icons/lingdang.png" mode="aspectFill"/>
 
-        <view class="top_button" type="warn" bindtap="restartGame">重新开始</view>
+        <view class="top_button" type="primary" bindtap="restartGame">重新开始</view>
     </view>
     <canvas canvas-id="myCanvas" style="width: {{width}}rpx;height: {{height}}rpx"></canvas>
 
@@ -18,6 +18,12 @@
         </view>
         <button type="warn" style="margin-top: 10rpx" bindtap="down">↓</button>
         <button class="back" type="warn" bindtap="withdraw">倒</button>
+
+        <view class="play-area" wx:if="{{isPlay}}">
+            <image class="play_button" src="/images/icons/ic_back.png" mode="aspectFill" bindtap="playBack" ></image>
+            <image class="play_button" src="/images/icons/{{sPlay?'ic_play':'ic_pause'}}.png" mode="aspectFill" bindtap="doPlay"></image>
+            <image class="play_button" src="/images/icons/ic_next.png" mode="aspectFill" bindtap="playNext"></image>
+        </view>
     </view>
 
 

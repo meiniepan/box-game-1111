@@ -13,7 +13,7 @@ Page({
         setTimeout(() => {
                 this.checkOnline()
             }
-            , 2000)
+            , 0)
 
     },
     checkOnline() {

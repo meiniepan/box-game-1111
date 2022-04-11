@@ -5,23 +5,39 @@ const {getRpx} = require("../../utils/utils");
 var map = []
 var box = []
 let boxWithdraw = []
-let answer = []
+let playAnswer = []
+let playIndex = 0
 let wIndex = -1
 let width = 700
 let height = 700
 var w = 40
-let withdrawMax = 20//最大倒退数
+let withdrawMax = 100//最大倒退数
 //人物的行与列
 var row = 0
 var col = 0
 var row_len = 0
 var col_len = 0
 let timer = null
+let canPlay = false;
 Page({
 
-    initMap: function (level) {
+    /**
+     * 页面的初始数据
+     */
+    data: {
+        helpArray: ["云端求解"],
+        answer: [],
+        boxSteps: 0,
+        isPlay: false
+    },
 
-        answer = []
+    initMap: function (level) {
+        wIndex = -1
+        boxWithdraw = []
+        this.setData({
+            answer: [],
+            boxSteps: 0,
+        })
         let mapData = data.maps[this.data.index][level].Map
         mapData = mapData.split("\n")
 
@@ -90,11 +106,11 @@ Page({
                     // b = true
                     img = "wall1.png"
                 } else if (map[i][j] == 3) {
-                    img = "ball2.png"
+                    img = "ball.png"
                 } else if (map[i][j] == 0) {
                     img = ""
                 } else {
-                    img = "img.png"
+                    img = "fill.png"
                 }
                 if (img.length > 0) {
                     ctx.drawImage("/images/icons/" + img, j * w, i * w, w, w)
@@ -103,7 +119,7 @@ Page({
                 if (box[i][j] == 4) {
                     ctx.drawImage("/images/icons/box1.png", j * w, i * w, w, w)
                 } else if (box[i][j] == 7) {
-                    ctx.drawImage("/images/icons/box3.png", j * w, i * w, w, w)
+                    ctx.drawImage("/images/icons/box2.png", j * w, i * w, w, w)
                 } else if (box[i][j] == 5) {
                     row = i
                     col = j
@@ -114,12 +130,9 @@ Page({
         }
         ctx.draw()
     },
-    up(){
-        console.log("timer",timer)
-        if (timer!=null){
-            clearInterval(timer)
-        }
-      this.up0()
+    up() {
+        this.cancelPlay()
+        this.up0()
     },
 
     up0: function () {
@@ -142,7 +155,7 @@ Page({
                         box[row][col] = 0
                         row = row - 1
                         box[row][col] = 5
-                        this.saveBox(1)
+                        this.saveBox(1, true)
                     }
                 }
             }
@@ -151,10 +164,8 @@ Page({
         }
     },
 
-    down(){
-        if (timer!=null){
-            clearInterval(timer)
-        }
+    down() {
+        this.cancelPlay()
         this.down0()
     },
 
@@ -177,7 +188,7 @@ Page({
                         box[row][col] = 0
                         row = row + 1
                         box[row][col] = 5
-                        this.saveBox(2)
+                        this.saveBox(2, true)
                     }
                 }
             }
@@ -186,10 +197,8 @@ Page({
         }
     },
 
-    left(){
-        if (timer!=null){
-            clearInterval(timer)
-        }
+    left() {
+        this.cancelPlay()
         this.left0()
     },
     left0: function () {
@@ -212,7 +221,7 @@ Page({
                         box[row][col] = 0
                         col = col - 1
                         box[row][col] = 5
-                        this.saveBox(3)
+                        this.saveBox(3, true)
                     }
                 }
             }
@@ -221,10 +230,8 @@ Page({
         }
     },
 
-    right(){
-        if (timer!=null){
-            clearInterval(timer)
-        }
+    right() {
+        this.cancelPlay()
         this.right0()
     },
 
@@ -248,7 +255,7 @@ Page({
                         box[row][col] = 0
                         col = col + 1
                         box[row][col] = 5
-                        this.saveBox(4)
+                        this.saveBox(4, true)
                     }
                 }
             }
@@ -256,37 +263,67 @@ Page({
             this.checkWin()
         }
     },
-
-    saveBox(id) {
-        if(id!=""){
-            answer.push(id)
+    cancelPlay() {
+        canPlay = false
+        this.setData({
+            isPlay: false,
+            sPlay: false,
+        })
+    },
+    saveBox(id, boxed = false) {
+        if (id != "") {
+            this.data.answer.push(id)
+            if (boxed) {
+                this.data.boxSteps++
+            }
+            this.setData({
+                answer: this.data.answer,
+                boxSteps: this.data.boxSteps
+            })
         }
         let box2 = this.getBox(box)
 
         if (boxWithdraw.length > withdrawMax) {
             boxWithdraw.splice(0, 1)
-            boxWithdraw.push(box2)
+            boxWithdraw.push({boxed: boxed, map: box2})
         } else {
-            boxWithdraw.push(box2)
+            boxWithdraw.push({boxed: boxed, map: box2})
             wIndex++
         }
     },
-    withdraw(){
-        if (timer!=null){
-            clearInterval(timer)
-        }
+    withdraw() {
+        this.cancelPlay()
         this.withdraw0()
     },
-    withdraw0() {
-        answer.push(5)
+
+    withdraw0(boxed) {
+        if (this.data.answer.length > 0) {
+            this.data.answer.pop()
+            this.setData({
+                answer: this.data.answer,
+            })
+        }
         if (wIndex < 1) {
         } else if (wIndex > withdrawMax) {
         } else {
+            let boxed0 = boxWithdraw[wIndex].boxed
+            if (boxed0) {
+                this.setData({
+                    boxSteps: --this.data.boxSteps
+                })
+            }
+
             boxWithdraw.splice(wIndex, 1)
-            box = this.getBox(boxWithdraw[wIndex - 1])
+            box = this.getBox(boxWithdraw[wIndex - 1].map)
             wIndex--
             this.drawCanvas()
             this.checkWin()
+            // if (!boxed && !boxed0) {
+            //     setTimeout(() => {
+            //         this.withdraw0(boxWithdraw[wIndex].boxed)
+            //     }, 300)
+            // }
+
         }
     },
     getBox(e) {
@@ -325,19 +362,19 @@ Page({
                 alertText: "恭喜!  游戏成功",
                 itemColor: "#81D8D0",
                 itemList: ['下一关', '上传答案'],
-                success:(res)=> {
+                success: (res) => {
                     console.log(res.tapIndex)
                     if (res.tapIndex == 0) {
                         if (next) {
                             let level = this.data.level
                             this.setData({
                                 level: level + 1,
+                            }, () => {
+                                wx.setNavigationBarTitle({
+                                    title: "关卡：" + data.maps[this.data.index][level].Title
+                                })
+                                _this.restartGame()
                             })
-                            wx.setNavigationBarTitle({
-                                title: "关卡：" + data.maps[this.data.index][level].Title
-                            })
-                            this.initMap(level)
-                            this.drawCanvas()
 
 
                         } else if (res.cancel) {
@@ -345,7 +382,7 @@ Page({
                         }
                     } else if (res.tapIndex == 1) {
                         let nick = wx.getStorageSync("user_name")
-                        if (nick.length==0){
+                        if (nick.length == 0) {
                             nick = "你的昵称"
                         }
                         wx.showModal({
@@ -354,7 +391,7 @@ Page({
                             editable: true,
                             confirmText: "上传",
                             success: (res) => {
-                                if (res.content.length==0){
+                                if (res.content.length == 0) {
                                     wx.showToast({
                                         icon: 'none',
                                         title: '昵称不能为空'
@@ -379,11 +416,12 @@ Page({
 
     upload() {
         const db = wx.cloud.database()
-        let data2= {
+        let data2 = {
             userName: wx.getStorageSync("user_name", "你的昵称"),
-            title:data.maps[this.data.index][this.data.level-1].Title,
-            answer: answer,
-            steps: answer.length,
+            title: data.maps[this.data.index][this.data.level - 1].Title,
+            answer: this.data.answer,
+            steps: this.data.answer.length,
+            boxSteps: this.data.boxSteps,
         }
         wx.showLoading({
             title: '上传中',
@@ -408,17 +446,15 @@ Page({
     },
 
     restartGame: function () {
-        wIndex = -1
-        boxWithdraw = []
+        this.cancelPlay()
+        this.restartGame0()
+    },
+    restartGame0: function () {
+
         this.initMap(this.data.level - 1)
         this.drawCanvas()
     },
-    /**
-     * 页面的初始数据
-     */
-    data: {
-        helpArray: ["云端求解"],
-    },
+
 
     /**
      * 生命周期函数--监听页面加载
@@ -445,9 +481,9 @@ Page({
             alertText: "",
             itemColor: "#81D8D0",
             itemList: arr,
-            success:(res2)=> {
+            success: (res2) => {
                 console.log(res2.tapIndex)
-                if (res2.tapIndex==0){
+                if (res2.tapIndex == 0) {
                     this.getAnswer()
                 }
             },
@@ -459,7 +495,7 @@ Page({
 
     },
 
-    getAnswer(){
+    getAnswer() {
         const db = wx.cloud.database()
         // 查询当前用户所有的 counters
         wx.showLoading({
@@ -467,8 +503,8 @@ Page({
         })
         db.collection("answer")
             .where({
-            title:data.maps[this.data.index][this.data.level-1].Title
-        })
+                title: data.maps[this.data.index][this.data.level - 1].Title
+            })
             .get({
                 success: res => {
                     wx.hideLoading()
@@ -489,15 +525,21 @@ Page({
                             if (i > 5) {
                                 break
                             }
-                            arr.push(res.data[i].userName+" [步数："+res.data[i].answer.length+"]")
+                            let boxSteps = "未知"
+                            if (res.data[i].boxSteps != null) {
+                                boxSteps = res.data[i].boxSteps
+                            }
+                            arr.push(res.data[i].userName
+                                + " [移步:" + res.data[i].answer.length + "]"
+                                + " [移箱:" + boxSteps + "]")
                         }
                         wx.showActionSheet({
                             alertText: "云端答案",
                             itemColor: "#81D8D0",
                             itemList: arr,
-                            success:(res2)=> {
+                            success: (res2) => {
                                 console.log(res2.tapIndex)
-                                this.playAnswer(res.data[res2.tapIndex].answer)
+                                this.initPlayAnswer(res.data[res2.tapIndex].answer)
                             },
                             fail(res) {
                                 console.log(res.errMsg)
@@ -521,28 +563,76 @@ Page({
                 }
             })
     },
-    playAnswer(arr) {
-        if (arr.length > 0) {
-            this.restartGame()
-            let index = 0
-             timer = setInterval(() => {
-                    if (index == arr.length) {
-                        clearInterval(timer)
-                    }
-                    if (arr[index] == 1) {
-                        this.up0()
-                    } else if (arr[index] == 2) {
-                        this.down0()
-                    } else if (arr[index] == 3) {
-                        this.left0()
-                    } else if (arr[index] == 4) {
-                        this.right0()
-                    } else if (arr[index] == 5) {
-                        this.withdraw0()
-                    }
-                    index++
-                }
-                , 500)
+
+    initPlayAnswer(arr) {
+        this.restartGame0()
+
+        playAnswer = arr
+        playIndex = 0
+        this.setData({
+            isPlay: true,
+            sPlay: true,
+        })
+        canPlay = true;
+        this.playAnswer()
+    },
+
+    playBack(e) {
+        canPlay = true;
+        this.setData({
+            sPlay: false,
+        })
+        this.withdraw0()
+    },
+    doPlay() {
+        canPlay = !this.data.sPlay;
+        this.setData({
+            sPlay: !this.data.sPlay,
+        })
+        this.playAnswer()
+    },
+    playNext(e) {
+        this.setData({
+            sPlay: false,
+        })
+        canPlay = true;
+        this.playAnswer()
+    },
+
+    playAnswer(loop) {
+        if (!canPlay) {
+            return
+        }
+        if (playIndex < playAnswer.length) {
+            switch (playAnswer[playIndex]) {
+                case 1:
+                    this.up0()
+                    break
+                case 2:
+                    this.down0()
+                    break
+                case 3:
+                    this.left0()
+                    break
+                case 4:
+                    this.right0()
+                    break
+                case 5:
+                    this.withdraw0()
+                    break
+                default:
+                    break
+            }
+
+            playIndex++
+            if (this.data.sPlay) {
+                setTimeout(() => {
+                    this.playAnswer(true)
+                }, 300)
+            }
+
+        } else {
+            this.cancelPlay()
         }
     },
     /**

@@ -1,2 +1,2 @@
 <!--pages/splash/splash.wxml-->
-<image class="img"  src="/images/icons/daba.jpg" mode="aspectFill"/>
+<image wx:if="{{show}}" class="img"  src="/images/icons/daba.jpg" mode="aspectFill"/>

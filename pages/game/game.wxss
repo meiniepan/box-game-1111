@@ -4,11 +4,40 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  padding: 20rpx 100rpx;
+  padding: 20rpx 30rpx;
   box-sizing: border-box;
 }
 .title{
-  font-size: 16pt;
+  color: greenyellow;
+}
+
+.play-area{
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 240rpx;
+  background: white;
+  left: 20rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 20rpx;
+  margin-top: 10rpx;
+}
+.play_button {
+  display: flex;
+  border-radius: 10rpx;
+  width: 60rpx;
+  height: 60rpx;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes myAnimation {
+  0% {
+    opacity: 0
+  }
+  100% {
+    opacity: 1
+  }
 }
 .image{
   width: 80rpx;
@@ -17,9 +46,10 @@
 .top_button {
   display: flex;
   border-radius: 10rpx;
+  background: white;
   padding: 5rpx 10rpx;
-  border: 1rpx solid red;
 }
+
 canvas{
   display: flex;
   flex-shrink: 0;
