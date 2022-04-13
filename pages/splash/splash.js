@@ -19,7 +19,9 @@ Page({
     checkOnline() {
         let time = new Date().getTime()/1000
         console.log("time",time)
-        if (time>1648276394){
+        // let time2 = 1649899167
+        let time2 = 0
+        if (time>time2){
 
             wx.redirectTo({
                 url: '/pages/home/home',

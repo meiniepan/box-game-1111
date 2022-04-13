@@ -7,6 +7,7 @@ var box = []
 let boxWithdraw = []
 let playAnswer = []
 let playIndex = 0
+let isVideo = false
 let wIndex = -1
 let width = 700
 let height = 700
@@ -32,6 +33,7 @@ Page({
     },
 
     initMap: function (level) {
+        isVideo = false
         wIndex = -1
         boxWithdraw = []
         this.setData({
@@ -296,7 +298,7 @@ Page({
         this.withdraw0()
     },
 
-    withdraw0(boxed) {
+    withdraw0(play) {
         if (this.data.answer.length > 0) {
             this.data.answer.pop()
             this.setData({
@@ -316,6 +318,9 @@ Page({
             boxWithdraw.splice(wIndex, 1)
             box = this.getBox(boxWithdraw[wIndex - 1].map)
             wIndex--
+            if (play) {
+                playIndex--
+            }
             this.drawCanvas()
             this.checkWin()
             // if (!boxed && !boxed0) {
@@ -349,7 +354,7 @@ Page({
     },
     checkWin: function () {
         let _this = this
-        if (this.isWin()) {
+        if (this.isWin() && !isVideo) {
             let levels = wx.getStorageSync("levels" + this.data.index)
             let next = levels.length > (this.data.level)
 
@@ -569,6 +574,7 @@ Page({
 
         playAnswer = arr
         playIndex = 0
+        isVideo = true
         this.setData({
             isPlay: true,
             sPlay: true,
@@ -578,11 +584,14 @@ Page({
     },
 
     playBack(e) {
+        if (this.data.sPlay) {
+            this.setData({
+                sPlay: false,
+            })
+            return
+        }
         canPlay = true;
-        this.setData({
-            sPlay: false,
-        })
-        this.withdraw0()
+        this.withdraw0(true)
     },
     doPlay() {
         canPlay = !this.data.sPlay;
@@ -592,9 +601,12 @@ Page({
         this.playAnswer()
     },
     playNext(e) {
-        this.setData({
-            sPlay: false,
-        })
+        if (this.data.sPlay) {
+            this.setData({
+                sPlay: false,
+            })
+            return
+        }
         canPlay = true;
         this.playAnswer()
     },
@@ -628,7 +640,7 @@ Page({
             if (this.data.sPlay) {
                 setTimeout(() => {
                     this.playAnswer(true)
-                }, 300)
+                }, 100)
             }
 
         } else {
