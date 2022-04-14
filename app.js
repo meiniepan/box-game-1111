@@ -45,6 +45,95 @@ App({
     //隐藏系统tabbar
     //wx.hideTabBar();
   },
+  getOpenid() {
+    let openid = wx.getStorageSync("openid")
+    if (!isEmpty(openid)) {
+      return openid
+    }
+    return new Promise(resolve => {
+      wx.cloud.callFunction({
+        name: 'get',
+        complete: res => {
+          var openid = res.result.openid
+          resolve(openid)
+          console.log("openid", openid)
+          wx.setStorageSync("openid", openid)
+        }
+      })
+    });
+  },
+  httpGet0: function (url, data, loading, loadingMsg) {
+    return this.httpBase0('GET', url, data, loading, loadingMsg);
+  },
+  httpPost0: function (url, data, loading = true, loadingMsg, contentType) {
+    return this.httpBase0('POST', url, data, loading, loadingMsg, contentType);
+  },
+  httpBase0: function (method, url, data, loading = false, loadingMsg, contentType = 'application/x-www-form-urlencoded') {
+    let requestUrl = url;
+    console.log("url", requestUrl)
+    if (loading) {
+      wx.showLoading({
+        title: loadingMsg || '加载中...',
+        mask: true
+      });
+    } else {
+      wx.showNavigationBarLoading();
+    }
+
+    function request(resolve, reject) {
+      wx.request({
+        header: {
+          'Content-Type': contentType,
+        },
+        method: method,
+        url: requestUrl,
+        data: data,
+        success: function (result) {
+          if (loading) {
+            wx.hideLoading({
+              complete: (res) => {
+              },
+            });
+          } else {
+            wx.hideNavigationBarLoading({
+              complete: (res) => {
+              },
+            });
+          }
+
+          let res = result.data || {};
+          let code = res.respCode;
+          let errMsg = res.respMsg;
+
+
+          resolve(res);
+        },
+        fail: res => {
+          reject(res);
+
+          if (loading) {
+            wx.hideLoading({
+              complete: (res) => {
+              },
+            });
+          } else {
+            wx.hideNavigationBarLoading({
+              complete: (res) => {
+              },
+            });
+          }
+
+          wx.showToast({
+            title: '网络异常，请稍后重试',
+            icon: 'none'
+          });
+        }
+      });
+    }
+
+    return new Promise(request);
+  },
+
   getSystemInfoBotom: function () {
     let t = this;
     wx.getSystemInfo({

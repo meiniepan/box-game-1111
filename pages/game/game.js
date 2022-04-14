@@ -2,6 +2,7 @@
 var data = require("../../utils/data.js")
 const {getRpx} = require("../../utils/utils");
 
+
 var map = []
 var box = []
 let boxWithdraw = []
@@ -37,7 +38,23 @@ Page({
         boxSteps: 0,
         isPlay: false
     },
-
+    /**
+     * 生命周期函数--监听页面加载
+     */
+    onLoad: function (options) {
+        let level = options.level
+        let index = options.index
+        this.setData({
+            level: parseInt(level) + 1,
+            index: index
+        })
+        wx.setNavigationBarTitle({
+            title: "关卡：" + data.maps[index][level].Title
+        })
+        this.ctx = wx.createCanvasContext('myCanvas')
+        this.initMap(level)
+        this.drawCanvas()
+    },
     initMap: function (level) {
         isVideo = false
         wIndex = -1
@@ -57,8 +74,6 @@ Page({
             width: width,
             height: height,
         })
-        console.log("row_len====", row_len)
-        console.log("col_len", col_len)
         for (var i = 0; i < row_len; i++) {
             box[i] = new Array()
             map[i] = new Array()
@@ -438,7 +453,6 @@ Page({
                 itemColor: "#81D8D0",
                 itemList: ['下一关', '上传答案'],
                 success: (res) => {
-                    console.log(res.tapIndex)
                     if (res.tapIndex == 0) {
                         if (next) {
                             let level = this.data.level
@@ -473,9 +487,10 @@ Page({
                                     })
                                     return
                                 }
-                                console.log("res", res)
-                                wx.setStorageSync("user_name", res.content)
-                                _this.upload()
+                                _this.securityText(res.content,()=>{
+                                    wx.setStorageSync("user_name", res.content)
+                                    _this.upload()
+                                })
                             },
                         })
                     }
@@ -488,7 +503,24 @@ Page({
 
         }
     },
-
+    async securityText(content,func) {
+        wx.cloud.callFunction({
+            name: 'msgSecCheck',
+            data:{text:content},
+            complete: res => {
+                var result = res.result.result.suggest
+                console.log("security", res.result.result.suggest)
+                if (result==="risky"){
+                    wx.showToast({
+                        icon: 'none',
+                        title: '注意敏感词汇'
+                    })
+                }else {
+                    func()
+                }
+            }
+        })
+    },
     upload() {
         const db = wx.cloud.database()
         let data2 = {
@@ -531,23 +563,7 @@ Page({
     },
 
 
-    /**
-     * 生命周期函数--监听页面加载
-     */
-    onLoad: function (options) {
-        let level = options.level
-        let index = options.index
-        this.setData({
-            level: parseInt(level) + 1,
-            index: index
-        })
-        wx.setNavigationBarTitle({
-            title: "关卡：" + data.maps[index][level].Title
-        })
-        this.ctx = wx.createCanvasContext('myCanvas')
-        this.initMap(level)
-        this.drawCanvas()
-    },
+
 
     doHelp(e) {
         let arr = ["云端求解"]
@@ -557,7 +573,6 @@ Page({
             itemColor: "#81D8D0",
             itemList: arr,
             success: (res2) => {
-                console.log(res2.tapIndex)
                 if (res2.tapIndex == 0) {
                     this.getAnswer()
                 }
@@ -613,7 +628,6 @@ Page({
                             itemColor: "#81D8D0",
                             itemList: arr,
                             success: (res2) => {
-                                console.log(res2.tapIndex)
                                 this.initPlayAnswer(res.data[res2.tapIndex].answer)
                             },
                             fail(res) {
