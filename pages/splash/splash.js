@@ -19,7 +19,7 @@ Page({
     checkOnline() {
         let time = new Date().getTime()/1000
         console.log("time",time)
-        // let time2 = 1649899167
+        // let time2 = 1649984338
         let time2 = 0
         if (time>time2){
 

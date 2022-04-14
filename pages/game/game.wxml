@@ -1,5 +1,8 @@
 <!--pages/game/game.wxml-->
-<view class="container" style="align-items: center">
+<view class="container" style="align-items: center"
+      bind:touchstart=""
+      bind:touchend=""
+      bind:touchcancel="">
     <view class="top">
         <view class="title">第{{level}}关 　移步:{{answer.length}} 　移箱:{{boxSteps}}</view>
 
