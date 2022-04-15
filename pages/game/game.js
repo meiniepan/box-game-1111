@@ -101,7 +101,7 @@ Page({
                     map[i][j] = 2
                 } else if (mapData[i][j] == "#") {//墙
                     map[i][j] = 1
-                } else if (mapData[i][j] == "_") {//墙
+                } else if (mapData[i][j] == "_") {//无
                     map[i][j] = 0
                 }
             }
@@ -146,8 +146,11 @@ Page({
                 } else if (box[i][j] == 5) {
                     row = i
                     col = j
-                    ctx.drawImage("/images/icons/me.gif", j * w, i * w, w, w)
-
+                    let image = "/images/icons/me1.png"
+                    if (map[i][j] == 3) {
+                        image = "/images/icons/me2.png"
+                    }
+                    ctx.drawImage(image, j * w, i * w, w, w)
                 }
             }
         }
@@ -487,7 +490,7 @@ Page({
                                     })
                                     return
                                 }
-                                _this.securityText(res.content,()=>{
+                                _this.securityText(res.content, () => {
                                     wx.setStorageSync("user_name", res.content)
                                     _this.upload()
                                 })
@@ -503,19 +506,19 @@ Page({
 
         }
     },
-    async securityText(content,func) {
+    async securityText(content, func) {
         wx.cloud.callFunction({
             name: 'msgSecCheck',
-            data:{text:content},
+            data: {text: content},
             complete: res => {
                 var result = res.result.result.suggest
                 console.log("security", res.result.result.suggest)
-                if (result==="risky"){
+                if (result === "risky") {
                     wx.showToast({
                         icon: 'none',
                         title: '注意敏感词汇'
                     })
-                }else {
+                } else {
                     func()
                 }
             }
@@ -561,8 +564,6 @@ Page({
         this.initMap(this.data.level - 1)
         this.drawCanvas()
     },
-
-
 
 
     doHelp(e) {
