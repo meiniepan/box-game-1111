@@ -149,6 +149,8 @@ Page({
                     let image = "/images/icons/me1.png"
                     if (map[i][j] == 3) {
                         image = "/images/icons/me2.png"
+                    }else if (i%2 + j%2==1) {
+                        image = "/images/icons/me3.png"
                     }
                     ctx.drawImage(image, j * w, i * w, w, w)
                 }
