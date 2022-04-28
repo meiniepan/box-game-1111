@@ -534,6 +534,7 @@ Page({
             answer: this.data.answer,
             steps: this.data.answer.length,
             boxSteps: this.data.boxSteps,
+            time:new Date(),
         }
         wx.showLoading({
             title: '上传中',
